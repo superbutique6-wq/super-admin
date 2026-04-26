@@ -1,7 +1,8 @@
-"use client";
-
-import React, { useState, useMemo } from 'react';
-import { Plus, Search, Trash2, X, CheckCircle, ImageOff, Edit2, Save } from 'lucide-react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { Plus, Search, Trash2, X, CheckCircle, ImageOff, Edit2, Save, UploadCloud } from 'lucide-react';
+import Script from 'next/script';
+import { storageService } from '@/services/storageService';
+import { communicationService } from '@/services/communicationService';
 
 type Product = { id: number; name: string; category: string; price: number; stock: number; status: string };
 
@@ -78,8 +79,30 @@ export default function ClientProductsPage() {
     setIsModalOpen(true);
   };
 
+  const [imageUrl, setImageUrl] = useState('');
+
+  const openUpload = () => {
+    // @ts-ignore
+    const widget = window.cloudinary?.createUploadWidget(
+      { 
+        cloudName: 'dw80rtrhc', 
+        uploadPreset: 'ml_default', // standard default unsigned preset
+        cropping: true,
+        sources: ['local', 'url']
+      }, 
+      (err, res) => { if (res.event === 'success') setImageUrl(res.info.secure_url); }
+    );
+    widget.open();
+  };
+
+  useEffect(() => {
+    // Simulated OneSignal init
+    // communicationService.initOneSignal();
+  }, []);
+
   return (
     <div className="max-w-6xl mx-auto">
+      <Script src="https://upload-widget.cloudinary.com/global/all.js" strategy="lazyOnload" />
       {/* Toast */}
       {toast && (
         <div className="fixed top-6 right-6 z-50 flex items-center space-x-2 bg-[#1C1C1C] text-white px-5 py-3 rounded-xl shadow-2xl animate-in slide-in-from-right">
@@ -158,7 +181,24 @@ export default function ClientProductsPage() {
               <h2 className="text-2xl font-serif">{editingProduct ? 'Edit Product' : 'Add New Product'}</h2>
               <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-600"><X size={24}/></button>
             </div>
-            <form onSubmit={handleSaveProduct} className="p-6 space-y-5">
+              <div>
+                <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Product Image</label>
+                <div className="flex items-center space-x-4">
+                  <button 
+                    type="button" 
+                    onClick={openUpload}
+                    className="flex-1 flex items-center justify-center space-x-2 border-2 border-dashed border-gray-200 rounded-xl py-4 text-gray-400 hover:border-[#E5C1CD] hover:text-[#E5C1CD] transition-all"
+                  >
+                    <UploadCloud size={20} />
+                    <span>{imageUrl ? 'Change Photo' : 'Upload Image'}</span>
+                  </button>
+                  {imageUrl && (
+                    <div className="w-16 h-16 rounded-lg overflow-hidden border border-gray-100">
+                      <img src={imageUrl} className="w-full h-full object-cover" />
+                    </div>
+                  )}
+                </div>
+              </div>
               <div>
                 <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Full Product Name</label>
                 <input required name="name" defaultValue={editingProduct?.name} type="text" className="w-full border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-[#E5C1CD] outline-none transition-all" placeholder="e.g. Silk Anarkali Suit" />

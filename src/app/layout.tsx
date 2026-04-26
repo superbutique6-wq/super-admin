@@ -17,6 +17,8 @@ export const metadata: Metadata = {
   description: "Ultra-professional boutique management.",
 };
 
+import Script from 'next/script';
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -24,6 +26,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <Script 
+          src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" 
+          strategy="afterInteractive" 
+        />
+      </head>
       <body
         className={`${playfair.variable} ${montserrat.variable} antialiased`}
       >

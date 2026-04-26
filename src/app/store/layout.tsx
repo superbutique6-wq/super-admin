@@ -25,12 +25,12 @@ export default function StorefrontLayout({
             </nav>
           </div>
           
-          <div className="flex-1 text-center font-[family-name:var(--font-playfair)]">
-            <Link href="/store" className="text-4xl tracking-tight text-[#333333]">PRERNA SILKS</Link>
+          <div className="flex-1 text-center font-[family-name:var(--font-playfair)] px-2">
+            <Link href="/store" className="text-xl sm:text-2xl md:text-4xl tracking-widest text-[#333333] whitespace-nowrap">PRERNA SILKS</Link>
           </div>
 
-          <div className="flex-1 flex justify-end space-x-6 text-sm tracking-widest">
-            <Link href="/store" className="hover:text-[#E5C1CD] transition-colors">SEARCH</Link>
+          <div className="flex-1 flex justify-end space-x-3 md:space-x-6 text-[10px] md:text-sm tracking-widest font-bold">
+            <Link href="/store" className="hover:text-[#E5C1CD] transition-colors hidden xs:block">SEARCH</Link>
             <Link href="/store" className="hover:text-[#E5C1CD] transition-colors">CART (0)</Link>
           </div>
         </div>

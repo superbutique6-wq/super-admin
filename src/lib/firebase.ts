@@ -2,14 +2,15 @@ import { initializeApp, getApps, getApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 
-// Replace this with your actual Firebase config later
+// Boutique SaaS Production Config
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyA9Ljox72HYj2tS58R-3Z3vivF5z0E1gLM",
+  authDomain: "butique-b934d.firebaseapp.com",
+  projectId: "butique-b934d",
+  storageBucket: "butique-b934d.firebasestorage.app",
+  messagingSenderId: "234341061665",
+  appId: "1:234341061665:web:3ff3f93700e64bf0673f60",
+  measurementId: "G-P4JYC270TG"
 };
 
 // Initialize Firebase
