@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, MessageCircle } from 'lucide-react';
 
 export default function StorefrontHome() {
   const { scrollYProgress } = useScroll();
@@ -47,16 +47,16 @@ export default function StorefrontHome() {
             Discover our meticulously handcrafted collection of luxury ethnic wear, designed for the modern muse.
           </p>
           <div className="flex items-center space-x-6">
-            <Link 
-              href="/store" 
-              onClick={() => alert("Added to mock cart!")}
-              className="group relative inline-flex items-center space-x-4 border-b-2 border-[#333333] pb-2 overflow-hidden"
+            <a 
+              href="#products"
+              onClick={e => { e.preventDefault(); document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' }); }}
+              className="group relative inline-flex items-center space-x-4 border-b-2 border-[#333333] pb-2 overflow-hidden cursor-pointer"
             >
                <span className="text-sm font-semibold tracking-widest uppercase text-[#333333] group-hover:text-[#E5C1CD] transition-colors duration-300">
                  Shop the Collection
                </span>
                <ArrowRight size={18} className="transform group-hover:translate-x-2 transition-transform duration-300 text-[#333333] group-hover:text-[#E5C1CD]" />
-            </Link>
+            </a>
           </div>
         </motion.div>
 
@@ -193,6 +193,17 @@ export default function StorefrontHome() {
           </motion.div>
         </div>
       </section>
+
+      {/* Floating WhatsApp Button */}
+      <a
+        href="https://wa.me/919876543210?text=Hi!%20I%20saw%20your%20boutique%20and%20would%20like%20to%20know%20more."
+        target="_blank"
+        rel="noopener noreferrer"
+        className="fixed bottom-6 right-6 z-50 flex items-center space-x-2 bg-green-500 hover:bg-green-600 text-white px-4 py-3 rounded-full shadow-2xl transition-all hover:scale-105"
+      >
+        <MessageCircle size={22} />
+        <span className="text-sm font-semibold">Talk to Designer</span>
+      </a>
     </div>
   );
 }

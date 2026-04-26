@@ -1,163 +1,179 @@
 "use client";
 
-import React, { useState } from 'react';
-import { Plus, Search, Filter, MoreHorizontal, Image as ImageIcon, X } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { Plus, Search, Trash2, X, CheckCircle, ImageOff } from 'lucide-react';
+
+type Product = { id: number; name: string; category: string; price: string; stock: number; status: string };
+
+const INITIAL_PRODUCTS: Product[] = [
+  { id: 1, name: "Rose Zari Anarkali", category: "Suits", price: "₹12,499", stock: 15, status: "Active" },
+  { id: 2, name: "Ivory Silk Blouse", category: "Blouses", price: "₹4,999", stock: 8, status: "Active" },
+  { id: 3, name: "Charcoal Drape Dress", category: "Dresses", price: "₹8,999", stock: 0, status: "Out of Stock" },
+  { id: 4, name: "Blush Floral Lehenga", category: "Sets", price: "₹24,500", stock: 3, status: "Low Stock" },
+  { id: 5, name: "Royal Blue Salwar Suit", category: "Suits", price: "₹9,999", stock: 6, status: "Active" },
+  { id: 6, name: "Golden Frock", category: "Dresses", price: "₹6,500", stock: 4, status: "Active" },
+];
+
+const STATUS_COLORS: Record<string, string> = {
+  'Active': 'bg-green-100 text-green-700',
+  'Out of Stock': 'bg-red-100 text-red-700',
+  'Low Stock': 'bg-yellow-100 text-yellow-700',
+};
+
+const CATEGORY_EMOJIS: Record<string, string> = {
+  Suits: '🥻', Blouses: '👘', Dresses: '👗', Sets: '✨', Frocks: '🎀',
+};
 
 export default function ClientProductsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [products, setProducts] = useState([
-    { id: 1, name: "Rose Zari Anarkali", category: "Suits", price: "₹12,499", stock: 15, status: "Active", image: "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?q=80&w=2546&auto=format&fit=crop" },
-    { id: 2, name: "Ivory Silk Blouse", category: "Blouses", price: "₹4,999", stock: 8, status: "Active", image: "https://images.unsplash.com/photo-1613915617430-8ab0fd7c6baf?q=80&w=2602&auto=format&fit=crop" },
-    { id: 3, name: "Charcoal Drape Dress", category: "Dresses", price: "₹8,999", stock: 0, status: "Out of Stock", image: "https://images.unsplash.com/photo-1539008835657-9e8e9680c956?q=80&w=2574&auto=format&fit=crop" },
-    { id: 4, name: "Blush Floral Lehenga", category: "Sets", price: "₹24,500", stock: 3, status: "Low Stock", image: "https://images.unsplash.com/photo-1617922001439-4a2e6562f328?q=80&w=2574&auto=format&fit=crop" }
-  ]);
+  const [products, setProducts] = useState<Product[]>(INITIAL_PRODUCTS);
+  const [search, setSearch] = useState('');
+  const [filterCat, setFilterCat] = useState('All');
+  const [toast, setToast] = useState('');
+
+  const categories = ['All', ...Array.from(new Set(products.map(p => p.category)))];
+
+  const filtered = useMemo(() =>
+    products.filter(p =>
+      (filterCat === 'All' || p.category === filterCat) &&
+      p.name.toLowerCase().includes(search.toLowerCase())
+    ), [products, search, filterCat]);
+
+  const showToast = (msg: string) => {
+    setToast(msg);
+    setTimeout(() => setToast(''), 3000);
+  };
 
   const handleAddProduct = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const newProduct = {
+    const fd = new FormData(e.currentTarget);
+    const stock = parseInt(fd.get('stock') as string);
+    const newP: Product = {
       id: Date.now(),
-      name: formData.get('name') as string,
-      category: formData.get('category') as string,
-      price: `₹${formData.get('price')}`,
-      stock: parseInt(formData.get('stock') as string),
-      status: "Active",
-      image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=2583&auto=format&fit=crop" // Mock image
+      name: fd.get('name') as string,
+      category: fd.get('category') as string,
+      price: `₹${fd.get('price')}`,
+      stock,
+      status: stock === 0 ? 'Out of Stock' : stock <= 3 ? 'Low Stock' : 'Active',
     };
-    setProducts([newProduct, ...products]);
+    setProducts(prev => [newP, ...prev]);
     setIsModalOpen(false);
+    showToast(`"${newP.name}" added successfully!`);
+    e.currentTarget.reset();
   };
 
-  const deleteProduct = (id: number) => {
-    setProducts(products.filter(p => p.id !== id));
-  }
+  const deleteProduct = (id: number, name: string) => {
+    if (!confirm(`Delete "${name}"?`)) return;
+    setProducts(prev => prev.filter(p => p.id !== id));
+    showToast(`"${name}" deleted.`);
+  };
 
   return (
     <div className="max-w-6xl mx-auto">
+      {/* Toast */}
+      {toast && (
+        <div className="fixed top-6 right-6 z-50 flex items-center space-x-2 bg-green-600 text-white px-5 py-3 rounded-xl shadow-2xl animate-in slide-in-from-right">
+          <CheckCircle size={18} /><span className="text-sm font-medium">{toast}</span>
+        </div>
+      )}
+
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-serif text-gray-900">Products Catalog</h1>
-        <button 
-          onClick={() => setIsModalOpen(true)}
-          className="flex items-center space-x-2 bg-[#1C1C1C] text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-black transition-colors shadow-sm"
-        >
-          <Plus size={16} />
-          <span>Add Product</span>
+        <h1 className="text-3xl font-serif text-gray-900">Products Catalog <span className="text-sm text-gray-400 font-sans font-normal">({filtered.length} items)</span></h1>
+        <button onClick={() => setIsModalOpen(true)} className="flex items-center space-x-2 bg-[#1C1C1C] text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-black transition-colors shadow-sm">
+          <Plus size={16} /><span>Add Product</span>
         </button>
       </div>
 
-      <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
-        {/* Toolbar */}
-        <div className="p-4 border-b border-gray-200 flex justify-between items-center bg-gray-50/50">
-          <div className="relative w-72">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
-            <input 
-              type="text" 
-              placeholder="Search products..." 
-              className="w-full pl-9 pr-4 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#E5C1CD]"
-            />
-          </div>
-          <button className="flex items-center space-x-2 text-sm text-gray-600 bg-white border border-gray-300 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors">
-            <Filter size={16} />
-            <span>Filters</span>
-          </button>
+      {/* Filters */}
+      <div className="flex flex-wrap gap-3 mb-6">
+        <div className="relative flex-1 min-w-[200px]">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+          <input value={search} onChange={e => setSearch(e.target.value)} type="text" placeholder="Search by name..." className="w-full pl-9 pr-4 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#E5C1CD]" />
         </div>
-
-        {/* Table */}
-        <div className="overflow-x-auto">
-          <table className="w-full text-left">
-            <thead className="bg-gray-50 border-b border-gray-200">
-              <tr>
-                <th className="py-3 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">Product</th>
-                <th className="py-3 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">Category</th>
-                <th className="py-3 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">Price</th>
-                <th className="py-3 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">Inventory</th>
-                <th className="py-3 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {products.map(p => (
-                <ProductRow key={p.id} {...p} onDelete={() => deleteProduct(p.id)} />
-              ))}
-            </tbody>
-          </table>
+        <div className="flex gap-2 flex-wrap">
+          {categories.map(cat => (
+            <button key={cat} onClick={() => setFilterCat(cat)} className={`px-4 py-2 rounded-lg text-sm font-medium transition ${filterCat === cat ? 'bg-[#1C1C1C] text-white' : 'bg-white border border-gray-300 text-gray-600 hover:bg-gray-50'}`}>
+              {cat}
+            </button>
+          ))}
         </div>
       </div>
 
+      {/* Product Grid */}
+      {filtered.length === 0 ? (
+        <div className="text-center py-20 text-gray-400">
+          <ImageOff size={48} className="mx-auto mb-3 opacity-30" />
+          <p>No products found.</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filtered.map(p => (
+            <div key={p.id} className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow group">
+              {/* Product colour swatch instead of broken image */}
+              <div className="h-40 flex items-center justify-center text-6xl" style={{ background: 'linear-gradient(135deg, #f9f7f1, #f0e0e8)' }}>
+                {CATEGORY_EMOJIS[p.category] ?? '🛍️'}
+              </div>
+              <div className="p-4">
+                <div className="flex justify-between items-start mb-2">
+                  <h3 className="font-serif font-semibold text-gray-900 text-lg leading-tight">{p.name}</h3>
+                  <button onClick={() => deleteProduct(p.id, p.name)} className="text-gray-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100" title="Delete product">
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-500">{p.category}</span>
+                  <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${STATUS_COLORS[p.status] || 'bg-gray-100 text-gray-600'}`}>{p.status}</span>
+                </div>
+                <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
+                  <span className="font-bold text-gray-900">{p.price}</span>
+                  <span className="text-xs text-gray-400">{p.stock} in stock</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
       {/* Add Product Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black/50 flex flex-col items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl w-full max-w-lg overflow-hidden shadow-2xl relative animate-in fade-in zoom-in-95 duration-200">
-            <div className="flex justify-between items-center p-6 border-b border-gray-100">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl w-full max-w-lg shadow-2xl">
+            <div className="flex justify-between items-center p-5 border-b border-gray-100">
               <h2 className="text-xl font-serif">Add New Product</h2>
               <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-600"><X size={20}/></button>
             </div>
-            <form onSubmit={handleAddProduct} className="p-6 space-y-4">
+            <form onSubmit={handleAddProduct} className="p-5 space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Product Name</label>
-                <input required name="name" type="text" className="w-full border-gray-300 border rounded-lg p-2 focus:ring-[#E5C1CD] focus:border-[#E5C1CD] outline-none" placeholder="e.g. Silk Saree" />
+                <input required name="name" type="text" className="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-[#E5C1CD] focus:border-[#E5C1CD] outline-none" placeholder="e.g. Silk Anarkali Suit" />
               </div>
               <div className="flex space-x-4">
                 <div className="flex-1">
                   <label className="block text-sm font-medium text-gray-700 mb-1">Price (₹)</label>
-                  <input required name="price" type="number" className="w-full border-gray-300 border rounded-lg p-2 focus:ring-[#E5C1CD] focus:border-[#E5C1CD] outline-none" placeholder="e.g. 5000" />
+                  <input required name="price" type="number" min="0" className="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-[#E5C1CD] focus:border-[#E5C1CD] outline-none" placeholder="5000" />
                 </div>
                 <div className="flex-1">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Stock</label>
-                  <input required name="stock" type="number" className="w-full border-gray-300 border rounded-lg p-2 focus:ring-[#E5C1CD] focus:border-[#E5C1CD] outline-none" placeholder="e.g. 10" />
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Stock Qty</label>
+                  <input required name="stock" type="number" min="0" className="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-[#E5C1CD] focus:border-[#E5C1CD] outline-none" placeholder="10" />
                 </div>
               </div>
               <div>
-                 <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                 <select required name="category" className="w-full border-gray-300 border rounded-lg p-2 outline-none">
-                    <option>Blouses</option>
-                    <option>Suits</option>
-                    <option>Dresses</option>
-                 </select>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                <select required name="category" className="w-full border border-gray-300 rounded-lg p-2.5 outline-none focus:ring-[#E5C1CD] focus:border-[#E5C1CD]">
+                  <option>Blouses</option>
+                  <option>Suits</option>
+                  <option>Dresses</option>
+                  <option>Sets</option>
+                  <option>Frocks</option>
+                </select>
               </div>
-              <div className="pt-4">
-                <button type="submit" className="w-full bg-[#1C1C1C] text-white py-3 rounded-lg font-medium hover:bg-black transition-colors">Save Product</button>
-              </div>
+              <button type="submit" className="w-full bg-[#1C1C1C] text-white py-3 rounded-lg font-medium hover:bg-black transition-colors mt-2">
+                Save Product
+              </button>
             </form>
           </div>
         </div>
       )}
     </div>
-  );
-}
-
-function ProductRow({ name, category, price, stock, status, image, onDelete }: { name: string, category: string, price: string, stock: number, status: string, image: string, onDelete: () => void }) {
-  const statusColors = {
-    'Active': 'bg-green-100 text-green-700',
-    'Out of Stock': 'bg-red-100 text-red-700',
-    'Low Stock': 'bg-yellow-100 text-yellow-700'
-  }[status as string] || 'bg-gray-100 text-gray-700';
-
-  return (
-    <tr className="hover:bg-gray-50 transition-colors group">
-      <td className="py-4 px-6 relative flex items-center space-x-4">
-        {image ? (
-          <img src={image} alt={name} className="w-12 h-16 object-cover rounded shadow-sm" />
-        ) : (
-          <div className="w-12 h-16 bg-gray-100 rounded flex items-center justify-center text-gray-400"><ImageIcon size={20} /></div>
-        )}
-        <span className="font-medium text-gray-900">{name}</span>
-      </td>
-      <td className="py-4 px-6 text-gray-500">{category}</td>
-      <td className="py-4 px-6 font-medium text-gray-900">{price}</td>
-      <td className="py-4 px-6">
-        <div>
-          <span className="text-gray-900 font-medium">{stock} in stock</span>
-          <br />
-          <span className={`inline-block mt-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${statusColors}`}>
-            {status}
-          </span>
-        </div>
-      </td>
-      <td className="py-4 px-6 text-right">
-        <button className="text-gray-400 hover:text-gray-600 transition-colors relative group/menu" onClick={onDelete}>
-          <span className="text-xs text-red-500 opacity-0 group-hover/menu:opacity-100 transition-opacity">Delete</span>
-        </button>
-      </td>
-    </tr>
   );
 }
