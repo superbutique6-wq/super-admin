@@ -25,7 +25,7 @@ export default function ClientAdminLayout({
               <ShoppingBag size={18} />
               <span className="text-sm tracking-wide">Products</span>
             </Link>
-            <Link href="/client-admin/products" className="flex items-center space-x-3 p-3 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-colors">
+            <Link href="/client-admin/categories" className="flex items-center space-x-3 p-3 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-colors">
               <Grid size={18} />
               <span className="text-sm tracking-wide">Categories</span>
             </Link>

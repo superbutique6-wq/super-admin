@@ -1,14 +1,36 @@
 "use client";
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { ArrowRight, MessageCircle } from 'lucide-react';
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
+import { ArrowRight, MessageCircle, X, ShoppingBag, ArrowUpRight } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
+
+const PRODUCTS = [
+  { id: 1, name: "Rose Zari Anarkali", category: "Suits", price: "₹12,499", image: "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?q=80&w=2546&auto=format&fit=crop", description: "A masterpiece of craftsmanship, this Rose Zari Anarkali features hand-embroidered floral motifs and delicate gold thread work." },
+  { id: 2, name: "Ivory Silk Blouse", category: "Blouses", price: "₹4,999", image: "https://images.unsplash.com/photo-1613915617430-8ab0fd7c6baf?q=80&w=2602&auto=format&fit=crop", description: "Timeless ivory silk blouse with a modern neckline, perfect for pairing with any statement saree or lehenga." },
+  { id: 3, name: "Charcoal Drape Dress", category: "Dresses", price: "₹8,999", image: "https://images.unsplash.com/photo-1539008835657-9e8e9680c956?q=80&w=2574&auto=format&fit=crop", description: "Contemporary drape dress in charcoal grey, offering a fluid silhouette and effortless elegance for evening soirees." },
+  { id: 4, name: "Blush Floral Lehenga", category: "Sets", price: "₹24,500", image: "https://images.unsplash.com/photo-1617922001439-4a2e6562f328?q=80&w=2574&auto=format&fit=crop", description: "A romantic blush lehenga with intricate floral beadwork and a soft tulle dupatta for a fairytale wedding look." },
+  { id: 5, name: "Sunset Gold Saree", category: "Sets", price: "₹18,200", image: "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?q=80&w=2574&auto=format&fit=crop", description: "Glowing sunset gold hand-loomed saree that catches every ray of light. A celebration of traditional Indian textiles." },
+  { id: 6, name: "Midnight Velvet Kaftan", category: "Dresses", price: "₹10,500", image: "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?q=80&w=2574&auto=format&fit=crop", description: "Luxurious midnight blue velvet kaftan with metallic embroidery, blending comfort with opulent style." },
+];
 
 export default function StorefrontHome() {
+  const searchParams = useSearchParams();
+  const activeCategory = searchParams.get('category') || 'All';
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
+  const [filteredProducts, setFilteredProducts] = useState(PRODUCTS);
+
+  useEffect(() => {
+    if (activeCategory === 'All') {
+      setFilteredProducts(PRODUCTS);
+    } else {
+      setFilteredProducts(PRODUCTS.filter(p => p.category.toUpperCase() === activeCategory.toUpperCase()));
+    }
+  }, [activeCategory]);
+
   const { scrollYProgress } = useScroll();
-  const heroY = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.4], [1, 0]);
   
   // Stagger variants for the product grid
   const container = {
@@ -74,13 +96,13 @@ export default function StorefrontHome() {
               backgroundImage: "url('https://images.unsplash.com/photo-1610030469983-98e550d61dc5?q=80&w=2574&auto=format&fit=crop')",
               backgroundPosition: "center 20%",
               backgroundSize: "cover",
-              clipPath: "polygon(15% 0, 100% 0, 100% 100%, 0% 100%)" // Dynamic angular cut
+              clipPath: "polygon(15% 0, 100% 0, 100% 100%, 0% 100%)"
             }} />
           </motion.div>
         </motion.div>
       </section>
 
-      {/* Narrative Section - SaaS Level addition */}
+      {/* Narrative Section */}
       <section className="py-32 bg-[#F9F7F1] relative">
         <div className="max-w-4xl mx-auto px-6 text-center">
             <motion.p 
@@ -104,95 +126,136 @@ export default function StorefrontHome() {
         </div>
       </section>
 
-      {/* Studio Collections - Overlapping Cards */}
-      <section className="py-32 max-w-7xl mx-auto px-6 lg:px-12 bg-white relative z-20">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.8 }}
-          className="flex justify-between items-end mb-20"
-        >
-          <h3 className="text-4xl md:text-5xl font-[family-name:var(--font-playfair)] text-[#333333]">The Edit</h3>
-        </motion.div>
-
-        <div className="flex flex-col md:flex-row gap-8 md:gap-16">
-          {/* Main Large Card */}
-          <Link href="#" className="group relative flex-1 h-[700px] cursor-pointer overflow-hidden rounded-[2rem]">
-            <motion.div 
-              whileHover={{ scale: 1.03 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-              className="absolute inset-0 bg-neutral-200" style={{
-              backgroundImage: "url('https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=2583&auto=format&fit=crop')",
-              backgroundSize: "cover",
-              backgroundPosition: "center"
-            }} />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent transition-opacity duration-500" />
-            <div className="absolute bottom-12 left-10 text-white z-10 w-2/3">
-              <span className="inline-block px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-xs tracking-widest uppercase mb-4">Trending</span>
-              <h4 className="text-4xl font-[family-name:var(--font-playfair)] mb-2 group-hover:-translate-y-2 transition-transform duration-300">Signature Suits</h4>
-              <p className="font-light text-gray-200">The epitome of effortless grace.</p>
+      {/* Main Grid Section */}
+      <section id="products" className="py-32 px-6 lg:px-12 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+            <div>
+              <span className="text-xs font-bold tracking-[0.3em] text-[#E5C1CD] uppercase mb-4 block">Our Collection</span>
+              <h2 className="text-4xl md:text-5xl font-[family-name:var(--font-playfair)] text-[#333333]">
+                {activeCategory === 'All' ? 'Featured Masterpieces' : activeCategory}
+              </h2>
             </div>
-          </Link>
-
-          {/* Stacked View */}
-          <div className="flex-1 flex flex-col gap-8">
-            <Link href="#" className="group relative flex-1 h-[330px] cursor-pointer overflow-hidden rounded-[2rem]">
-              <motion.div 
-                whileHover={{ scale: 1.05 }}
-                transition={{ duration: 0.7, ease: "easeOut" }}
-                className="absolute inset-0 bg-neutral-200" style={{
-                backgroundImage: "url('https://images.unsplash.com/photo-1583391733958-650fac5b1368?q=80&w=2574&auto=format&fit=crop')",
-                backgroundSize: "cover",
-                backgroundPosition: "top"
-              }} />
-              <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors duration-500" />
-              <div className="absolute bottom-8 left-8 text-white z-10">
-                <h4 className="text-3xl font-[family-name:var(--font-playfair)] mb-1">Blouses</h4>
-                <p className="text-xs tracking-widest uppercase opacity-80">Explore</p>
-              </div>
-            </Link>
-            
-            <div className="flex-1 bg-[#F9F7F1] rounded-[2rem] p-10 flex flex-col justify-center border border-[#E5C1CD]/30">
-               <h4 className="text-2xl font-[family-name:var(--font-playfair)] text-[#333333] mb-4">Bespoke Fitting</h4>
-               <p className="text-sm text-gray-500 font-light mb-6">Need a custom measurement? Speak directly to our master tailors.</p>
-               <button className="self-start text-xs font-bold uppercase tracking-widest bg-[#333333] text-white px-6 py-3 rounded-full hover:bg-[#E5C1CD] hover:text-[#333333] transition-colors">
-                 Talk to Designer
-               </button>
+            <div className="flex space-x-8 text-sm tracking-widest font-medium text-gray-400">
+              {['All', 'Suits', 'Blouses', 'Dresses', 'Sets'].map(cat => (
+                <Link 
+                  key={cat}
+                  href={`/store?category=${cat}`}
+                  className={`hover:text-[#333333] transition-colors pb-1 border-b-2 ${activeCategory === cat ? 'border-[#E5C1CD] text-[#333333]' : 'border-transparent'}`}
+                >
+                  {cat.toUpperCase()}
+                </Link>
+              ))}
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* Elegant Infinite Scroll / Product Display */}
-      <section className="bg-[#333333] text-white py-32 rounded-t-[3rem] relative z-20 mt-12">
-        <div className="max-w-7xl mx-auto px-6 lg:px-12">
-          <motion.div 
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="flex justify-between items-end mb-16"
-          >
-            <h3 className="text-4xl font-[family-name:var(--font-playfair)]">Latest Additions</h3>
-            <Link href="#" className="text-xs tracking-widest uppercase border-b border-gray-600 hover:text-white hover:border-white transition-colors pb-1">
-              Shop All
-            </Link>
-          </motion.div>
 
           <motion.div 
             variants={container}
             initial="hidden"
             whileInView="show"
             viewport={{ once: true, margin: "-50px" }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-20"
           >
-            <AnimatedProductCard name="Rose Zari Anarkali" price="₹12,499" image="https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?q=80&w=2546&auto=format&fit=crop" vars={item} />
-            <AnimatedProductCard name="Ivory Silk Blouse" price="₹4,999" image="https://images.unsplash.com/photo-1613915617430-8ab0fd7c6baf?q=80&w=2602&auto=format&fit=crop" vars={item} />
-            <AnimatedProductCard name="Charcoal Drape Dress" price="₹8,999" image="https://images.unsplash.com/photo-1539008835657-9e8e9680c956?q=80&w=2574&auto=format&fit=crop" vars={item} />
-            <AnimatedProductCard name="Blush Floral Lehenga" price="₹24,500" image="https://images.unsplash.com/photo-1617922001439-4a2e6562f328?q=80&w=2574&auto=format&fit=crop" vars={item} />
+            {filteredProducts.map((product) => (
+              <motion.div 
+                key={product.id}
+                variants={item}
+                className="group cursor-pointer"
+                onClick={() => setSelectedProduct(product)}
+              >
+                <div className="relative aspect-[3/4] overflow-hidden bg-gray-50 mb-6 rounded-sm shadow-sm group-hover:shadow-xl transition-all duration-500">
+                   <img 
+                    src={product.image} 
+                    alt={product.name}
+                    className="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105"
+                   />
+                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-500" />
+                   <div className="absolute bottom-0 left-0 w-full p-6 translate-y-full group-hover:translate-y-0 transition-transform duration-500 bg-white/90 backdrop-blur-sm flex justify-between items-center">
+                      <span className="text-xs font-bold tracking-widest uppercase">View Details</span>
+                      <ShoppingBag size={16} />
+                   </div>
+                </div>
+                <div className="space-y-2">
+                  <h3 className="text-xl font-[family-name:var(--font-playfair)] text-[#333333] group-hover:text-[#C5A1AD] transition-colors">
+                    {product.name}
+                  </h3>
+                  <div className="flex justify-between items-center text-xs tracking-widest uppercase text-gray-400">
+                    <span>{product.category}</span>
+                    <span className="font-medium text-[#333333]">{product.price}</span>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
           </motion.div>
         </div>
       </section>
+
+      {/* Product Detail Modal */}
+      <AnimatePresence>
+        {selectedProduct && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setSelectedProduct(null)}
+              className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+            />
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="relative bg-white w-full max-w-5xl h-fit max-h-[90vh] overflow-hidden grid grid-cols-1 md:grid-cols-2 shadow-2xl rounded-sm"
+            >
+              <button 
+                onClick={() => setSelectedProduct(null)}
+                className="absolute top-6 right-6 z-10 p-2 bg-white/90 hover:bg-white text-gray-900 rounded-full transition-colors"
+              >
+                <X size={20} />
+              </button>
+              
+              <div className="h-[40vh] md:h-[70vh] bg-gray-100 overflow-hidden">
+                <img 
+                  src={selectedProduct.image} 
+                  alt={selectedProduct.name} 
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              
+              <div className="p-8 md:p-12 flex flex-col justify-center bg-[#F9F7F1]/30">
+                <span className="text-xs font-bold tracking-[0.4em] text-[#E5C1CD] uppercase mb-4 block">{selectedProduct.category}</span>
+                <h2 className="text-4xl md:text-5xl font-[family-name:var(--font-playfair)] text-[#333333] mb-6">{selectedProduct.name}</h2>
+                <p className="text-2xl text-[#333333] mb-8 font-light italic">{selectedProduct.price}</p>
+                
+                <p className="text-gray-600 leading-relaxed mb-10 text-lg">
+                  {selectedProduct.description}
+                </p>
+                
+                <div className="space-y-4">
+                  <a 
+                    href={`https://wa.me/919876543210?text=Hi!%20I'm%20interested%20in%20the%20${encodeURIComponent(selectedProduct.name)}.`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full py-5 bg-[#1C1C1C] text-white flex items-center justify-center space-x-3 text-sm font-bold tracking-widest uppercase hover:bg-black transition-all"
+                  >
+                    <MessageCircle size={20} />
+                    <span>Talk to Designer</span>
+                  </a>
+                  <button 
+                    onClick={() => {
+                      alert("Sharing feature coming soon!");
+                    }}
+                    className="w-full py-5 border border-gray-200 text-[#333333] flex items-center justify-center space-x-3 text-sm font-bold tracking-widest uppercase hover:bg-gray-50 transition-all"
+                  >
+                    <ArrowUpRight size={20} />
+                    <span>Share Details</span>
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       {/* Floating WhatsApp Button */}
       <a
@@ -205,30 +268,5 @@ export default function StorefrontHome() {
         <span className="text-sm font-semibold">Talk to Designer</span>
       </a>
     </div>
-  );
-}
-
-function AnimatedProductCard({ name, price, image, vars }: { name: string, price: string, image: string, vars: any }) {
-  return (
-    <motion.div variants={vars} className="group cursor-pointer flex flex-col">
-      <div className="relative aspect-[3/4] w-full overflow-hidden bg-neutral-800 mb-6 rounded-2xl">
-        <motion.div 
-          whileHover={{ scale: 1.08 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-          className="absolute inset-0 bg-cover bg-center" 
-          style={{ backgroundImage: `url('${image}')` }}
-        />
-        {/* Quick Add Overlay */}
-        <div className="absolute inset-x-0 bottom-0 p-4 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-4 group-hover:translate-y-0">
-          <button className="w-full bg-white text-[#333333] py-3 text-xs tracking-widest font-bold uppercase rounded-xl hover:bg-[#E5C1CD] transition-colors shadow-xl">
-            Quick Add
-          </button>
-        </div>
-      </div>
-      <div>
-        <h5 className="font-[family-name:var(--font-playfair)] text-xl mb-1">{name}</h5>
-        <p className="text-sm font-light text-gray-400">{price}</p>
-      </div>
-    </motion.div>
   );
 }

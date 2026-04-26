@@ -25,11 +25,11 @@ export default function SuperAdminLayout({
               <Store size={20} />
               <span>Manage Boutiques</span>
             </Link>
-            <Link href="/super-admin" className="flex items-center space-x-3 p-3 rounded-lg text-gray-600 hover:bg-[#F9F7F1] transition-colors">
+            <Link href="/super-admin/billing" className="flex items-center space-x-3 p-3 rounded-lg text-gray-600 hover:bg-[#F9F7F1] transition-colors">
               <CreditCard size={20} />
               <span>Billing & Payments</span>
             </Link>
-            <Link href="/super-admin" className="flex items-center space-x-3 p-3 rounded-lg text-gray-600 hover:bg-[#F9F7F1] transition-colors">
+            <Link href="/super-admin/users" className="flex items-center space-x-3 p-3 rounded-lg text-gray-600 hover:bg-[#F9F7F1] transition-colors">
               <Users size={20} />
               <span>Owners</span>
             </Link>

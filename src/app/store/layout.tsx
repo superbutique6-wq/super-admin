@@ -19,9 +19,9 @@ export default function StorefrontLayout({
           <div className="flex-1">
             <nav className="hidden md:flex space-x-12 text-sm tracking-widest">
               <Link href="/store" className="hover:text-[#E5C1CD] transition-colors">NEW ARRIVALS</Link>
-              <Link href="/store" className="hover:text-[#E5C1CD] transition-colors">BLOUSES</Link>
-              <Link href="/store" className="hover:text-[#E5C1CD] transition-colors">SUITS</Link>
-              <Link href="/store" className="hover:text-[#E5C1CD] transition-colors">DRESSES</Link>
+              <Link href="/store?category=Blouses" className="hover:text-[#E5C1CD] transition-colors">BLOUSES</Link>
+              <Link href="/store?category=Suits" className="hover:text-[#E5C1CD] transition-colors">SUITS</Link>
+              <Link href="/store?category=Dresses" className="hover:text-[#E5C1CD] transition-colors">DRESSES</Link>
             </nav>
           </div>
           
