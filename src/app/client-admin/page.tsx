@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from 'react';
-import { Package, Eye, DollarSign, TrendingUp, X, MessageCircle, Check } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { Package, Eye, DollarSign, TrendingUp, X, MessageCircle, Check, LogOut, Settings, User } from 'lucide-react';
 import Link from 'next/link';
 
 type Inquiry = { id: number; customer: string; product: string; date: string; status: string };
@@ -16,6 +16,9 @@ export default function ClientAdminDashboard() {
   const [selectedInquiry, setSelectedInquiry] = useState<Inquiry | null>(null);
   const [replyText, setReplyText] = useState('');
   const [replySent, setReplySent] = useState(false);
+
+  // Simulated dynamic stats
+  const pendingInquiries = useMemo(() => inquiries.filter(i => i.status === 'Pending').length, [inquiries]);
 
   const handleReply = (inq: Inquiry) => {
     setSelectedInquiry(inq);
@@ -35,74 +38,113 @@ export default function ClientAdminDashboard() {
 
   return (
     <div className="max-w-6xl mx-auto">
-      <div className="flex justify-between items-end mb-8">
+      <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
         <div>
-          <h1 className="text-3xl font-serif text-gray-900 mb-1">Your Boutique Dashboard</h1>
-          <p className="text-gray-500">Here's what's going on at Prerna Silks today.</p>
+          <h1 className="text-4xl font-serif text-[#1C1C1C] mb-2 font-bold">Studio Overview</h1>
+          <p className="text-gray-500">Managing <span className="font-semibold text-gray-800">Prerna Silks</span> active instance.</p>
         </div>
-        <Link href="/client-admin/products" className="bg-[#1C1C1C] text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-black transition-colors">
-          + Add New Product
-        </Link>
+        <div className="flex items-center space-x-3">
+          <button className="p-2.5 bg-white border border-gray-200 rounded-xl text-gray-500 hover:text-black hover:bg-gray-50 transition-all shadow-sm">
+            <Settings size={20} />
+          </button>
+          <Link href="/client-admin/products" className="bg-[#1C1C1C] text-white px-6 py-3 rounded-xl text-sm font-bold uppercase tracking-widest hover:bg-black transition-all shadow-lg shadow-black/10">
+            + New Product
+          </Link>
+        </div>
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-10">
-        <StatCard title="Total Views" value="12,450" icon={<Eye size={20} className="text-blue-500" />} />
-        <StatCard title="Active Listings" value="48" icon={<Package size={20} className="text-purple-500" />} />
-        <StatCard title="Inquiries" value={String(inquiries.length)} icon={<TrendingUp size={20} className="text-green-500" />} />
-        <StatCard title="Sales Volume" value="₹85,000" icon={<DollarSign size={20} className="text-[#E5C1CD]" />} />
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+        <StatCard title="Direct Views" value="12.4k" icon={<Eye size={20} className="text-blue-500" />} />
+        <StatCard title="Portfolio items" value="48" icon={<Package size={20} className="text-purple-500" />} />
+        <StatCard title="Active Enquiries" value={String(pendingInquiries)} icon={<TrendingUp size={20} className="text-green-500" />} />
+        <StatCard title="Sales Est." value="₹85k" icon={<DollarSign size={20} className="text-[#E5C1CD]" />} />
       </div>
 
-      {/* Inquiries */}
-      <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-6 mb-10">
-        <h2 className="text-xl font-semibold mb-6">Recent Customer Inquiries</h2>
-        <div className="space-y-4">
-          {inquiries.map(inq => (
-            <div key={inq.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-100 gap-4">
-              <div>
-                <h4 className="font-medium text-gray-900">{inq.customer} <span className="text-sm font-normal text-gray-500">asked about</span> <span className="text-[#333333]">{inq.product}</span></h4>
-                <p className="text-xs text-gray-400 mt-1">{inq.date}</p>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+        {/* Inquiries */}
+        <div className="lg:col-span-2 bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden">
+          <div className="p-6 border-b border-gray-50 bg-gray-50/30 flex justify-between items-center">
+             <h2 className="text-xl font-bold font-serif text-[#1C1C1C]">Customer Enquiries</h2>
+             <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">{inquiries.length} total</span>
+          </div>
+          <div className="divide-y divide-gray-50">
+            {inquiries.map(inq => (
+              <div key={inq.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-6 hover:bg-gray-50/50 transition-all gap-4">
+                <div>
+                  <h4 className="font-bold text-gray-900 group cursor-pointer hover:text-[#C5A1AD] transition-colors">{inq.customer}</h4>
+                  <p className="text-sm text-gray-500 mt-0.5">Query regarding <span className="text-[#1C1C1C] font-medium">{inq.product}</span></p>
+                  <p className="text-[10px] text-gray-400 mt-2 font-medium tracking-wider uppercase">{inq.date}</p>
+                </div>
+                <div className="flex items-center space-x-3 shrink-0">
+                  <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest ${inq.status === 'Pending' ? 'bg-yellow-50 text-yellow-600' : 'bg-green-50 text-green-600'}`}>{inq.status}</span>
+                  <button onClick={() => handleReply(inq)} className="text-xs text-[#1C1C1C] font-bold border border-gray-200 px-4 py-2 rounded-lg hover:bg-gray-100 transition-all">Reply</button>
+                </div>
               </div>
-              <div className="flex items-center space-x-3 shrink-0">
-                <span className={`px-3 py-1 rounded-full text-xs font-medium ${inq.status === 'Pending' ? 'bg-yellow-100 text-yellow-700' : inq.status === 'Responded' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'}`}>{inq.status}</span>
-                <button onClick={() => handleReply(inq)} className="text-sm text-white bg-[#1C1C1C] px-3 py-1.5 rounded-lg font-medium hover:bg-black transition-colors">Reply</button>
-                <a href={whatsappURL(inq.product)} target="_blank" rel="noopener noreferrer" className="flex items-center space-x-1 text-sm text-green-600 bg-green-50 border border-green-200 px-3 py-1.5 rounded-lg font-medium hover:bg-green-100 transition-colors">
-                  <MessageCircle size={14} />
-                  <span>WhatsApp</span>
-                </a>
+            ))}
+          </div>
+        </div>
+
+        {/* Quick Actions */}
+        <div className="space-y-6">
+           <div className="bg-[#1C1C1C] rounded-2xl p-6 text-white shadow-xl shadow-black/20">
+              <div className="w-12 h-12 bg-white/10 rounded-xl mb-4 flex items-center justify-center">
+                 <User className="text-[#E5C1CD]" size={24} />
               </div>
-            </div>
-          ))}
+              <h3 className="text-lg font-bold mb-2">Prerna Sharma</h3>
+              <p className="text-sm text-gray-400 font-light mb-6">Administrator Access</p>
+              <button onClick={() => alert("Simulation: Logged out")} className="w-full py-3 bg-red-500/20 hover:bg-red-500 text-red-500 hover:text-white rounded-xl text-sm font-bold transition-all flex items-center justify-center space-x-2">
+                 <LogOut size={16} />
+                 <span>Sign Out</span>
+              </button>
+           </div>
+           
+           <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm">
+              <h4 className="text-sm font-bold uppercase tracking-widest text-gray-400 mb-4">Quick Links</h4>
+              <nav className="space-y-2">
+                 <Link href="/store" target="_blank" className="flex items-center justify-between p-3 rounded-xl hover:bg-gray-50 group transition-all">
+                    <span className="text-sm font-medium text-gray-700">View Public Store</span>
+                    <TrendingUp size={16} className="text-gray-300 group-hover:text-black" />
+                 </Link>
+                 <Link href="/client-admin/settings" className="flex items-center justify-between p-3 rounded-xl hover:bg-gray-50 group transition-all">
+                    <span className="text-sm font-medium text-gray-700">Live Customizer</span>
+                    <Settings size={16} className="text-gray-300 group-hover:text-black" />
+                 </Link>
+              </nav>
+           </div>
         </div>
       </div>
 
       {/* Reply Modal */}
       {selectedInquiry && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl w-full max-w-lg shadow-2xl">
-            <div className="flex justify-between items-center p-5 border-b border-gray-100">
-              <h3 className="font-semibold">Reply to {selectedInquiry.customer}</h3>
-              <button onClick={() => setSelectedInquiry(null)} className="text-gray-400 hover:text-gray-600"><X size={18}/></button>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4">
+          <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden">
+            <div className="flex justify-between items-center p-6 border-b border-gray-100 bg-gray-50/30">
+              <h3 className="font-serif text-xl font-bold">Reply to {selectedInquiry.customer}</h3>
+              <button onClick={() => setSelectedInquiry(null)} className="text-gray-400 hover:text-gray-600"><X size={24}/></button>
             </div>
-            <div className="p-5">
-              <p className="text-sm text-gray-500 mb-3">Regarding: <strong>{selectedInquiry.product}</strong></p>
+            <div className="p-6">
+              <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">RE: {selectedInquiry.product}</p>
               {replySent ? (
-                <div className="flex items-center space-x-2 text-green-600 bg-green-50 p-4 rounded-lg">
-                  <Check size={20}/><span className="font-medium">Reply sent successfully!</span>
+                <div className="flex flex-col items-center justify-center py-8 text-green-600">
+                  <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mb-4">
+                    <Check size={32}/><span className="sr-only">Check</span>
+                  </div>
+                  <span className="font-bold">Reply sent successfully!</span>
                 </div>
               ) : (
                 <>
                   <textarea
                     value={replyText}
                     onChange={e => setReplyText(e.target.value)}
-                    rows={4}
-                    placeholder="Type your reply here..."
-                    className="w-full border border-gray-200 rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#E5C1CD] resize-none"
+                    rows={5}
+                    placeholder="Type your message to the client..."
+                    className="w-full border border-gray-200 rounded-xl p-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#E5C1CD] resize-none transition-all"
                   />
-                  <div className="flex space-x-3 mt-4">
-                    <button onClick={sendReply} disabled={!replyText.trim()} className="flex-1 bg-[#1C1C1C] text-white py-2.5 rounded-lg text-sm font-medium hover:bg-black disabled:opacity-50 disabled:cursor-not-allowed transition-colors">Send Reply</button>
-                    <a href={whatsappURL(selectedInquiry.product)} target="_blank" rel="noopener noreferrer" className="flex items-center space-x-1 px-4 py-2.5 bg-green-500 text-white rounded-lg text-sm font-medium hover:bg-green-600 transition-colors">
-                      <MessageCircle size={14}/><span>WhatsApp</span>
+                  <div className="grid grid-cols-2 gap-4 mt-6">
+                    <button onClick={sendReply} disabled={!replyText.trim()} className="bg-[#1C1C1C] text-white py-4 rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-black disabled:opacity-50 transition-all">Send Message</button>
+                    <a href={whatsappURL(selectedInquiry.product)} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center space-x-2 bg-green-500 text-white rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-green-600 transition-all">
+                      <MessageCircle size={18}/><span>WhatsApp</span>
                     </a>
                   </div>
                 </>
@@ -117,12 +159,12 @@ export default function ClientAdminDashboard() {
 
 function StatCard({ title, value, icon }: { title: string; value: string; icon: React.ReactNode }) {
   return (
-    <div className="bg-white border border-gray-200 p-5 rounded-xl shadow-sm">
-      <div className="flex justify-between items-start mb-3">
-        <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide">{title}</h3>
-        <div className="p-2 bg-gray-50 rounded-lg">{icon}</div>
+    <div className="bg-white border border-gray-100 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all">
+      <div className="flex justify-between items-start mb-4">
+        <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest">{title}</h3>
+        <div className="p-2.5 bg-gray-50 rounded-xl">{icon}</div>
       </div>
-      <p className="text-2xl font-bold text-gray-900">{value}</p>
+      <p className="text-3xl font-black text-gray-900">{value}</p>
     </div>
   );
 }

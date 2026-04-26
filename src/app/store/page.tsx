@@ -262,10 +262,12 @@ export default function StorefrontHome() {
         href="https://wa.me/919876543210?text=Hi!%20I%20saw%20your%20boutique%20and%20would%20like%20to%20know%20more."
         target="_blank"
         rel="noopener noreferrer"
-        className="fixed bottom-6 right-6 z-50 flex items-center space-x-2 bg-green-500 hover:bg-green-600 text-white px-4 py-3 rounded-full shadow-2xl transition-all hover:scale-105"
+        className="fixed bottom-6 right-6 z-50 flex items-center bg-green-500 hover:bg-green-600 text-white p-3 md:px-4 md:py-3 rounded-full shadow-2xl transition-all hover:scale-110 active:scale-95 group"
       >
-        <MessageCircle size={22} />
-        <span className="text-sm font-semibold">Talk to Designer</span>
+        <MessageCircle size={24} />
+        <span className="text-sm font-semibold max-w-0 overflow-hidden group-hover:max-w-xs md:max-w-xs md:ml-2 transition-all duration-500">
+          Talk to Designer
+        </span>
       </a>
     </div>
   );
