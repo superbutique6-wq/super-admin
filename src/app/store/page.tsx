@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { motion, useScroll, useTransform, AnimatePresence, useSpring, useMotionValue } from 'framer-motion';
-import { ArrowRight, MessageCircle, X, ShoppingBag, ArrowUpRight, PlayCircle } from 'lucide-react';
+import { ArrowRight, MessageCircle, X, ArrowUpRight, PlayCircle } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 
 const PRODUCTS = [
@@ -346,7 +346,7 @@ export default function StorefrontHome() {
                   <motion.a 
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    href={`https://wa.me/919876543210?text=I'm%20interested%20in%20${encodeURIComponent(selectedProduct.name)}`}
+                    href={`https://wa.me/919876543210?text=I'm%20interested%20in%20the%20${encodeURIComponent(selectedProduct.name)}`}
                     target="_blank"
                     className="w-full py-6 bg-[#121212] text-[#FDFDFA] flex items-center justify-center space-x-4 text-[10px] font-bold tracking-[0.4em] uppercase hover:bg-accent transition-all duration-700 shadow-xl"
                   >

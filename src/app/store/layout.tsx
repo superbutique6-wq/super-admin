@@ -30,10 +30,9 @@ export default function StorefrontLayout({
             </Link>
           </div>
 
-          <div className="flex-1 flex justify-end items-center space-x-6 md:space-x-10 text-[11px] tracking-[0.3em] font-bold uppercase">
-             <button className="hover:text-accent transition-colors duration-500 hidden sm:block">Search</button>
-             <Link href="/store" className="hover:text-accent transition-colors duration-500">
-               Cart <span className="font-sans ml-1 opacity-60">(0)</span>
+          <div className="flex-1 flex justify-end items-center space-x-6 md:space-x-10 text-[11px] tracking-[0.3em] font-bold uppercase text-accent">
+             <Link href="#products" className="hover:text-[#121212] transition-colors duration-500">
+               Atelier Inquiry
              </Link>
           </div>
         </div>
