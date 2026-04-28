@@ -7,63 +7,80 @@ export default function StorefrontLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-[#FFFFF0] text-[#333333] font-[family-name:var(--font-montserrat)] font-light">
-      {/* Promotion Bar */}
-      <div className="bg-[#333333] text-white text-center py-2 text-xs tracking-widest font-medium">
-        FREE WORLDWIDE SHIPPING ON ORDERS OVER ₹15,000
+    <div className="min-h-screen bg-[#FDFDFA] text-[#121212] font-sans font-light">
+      {/* Editorial Promotion Bar */}
+      <div className="bg-[#121212] text-[#FDFDFA] text-center py-3 text-[10px] tracking-[0.4em] font-medium uppercase">
+        <span className="opacity-80">Complimentary Worldwide Shipping on All Orders Over ₹15,000</span>
       </div>
 
-      {/* Header */}
-      <header className="sticky top-0 z-50 bg-[#FFFFF0]/90 backdrop-blur-md border-b border-[#E5C1CD]/30">
-        <div className="max-w-7xl mx-auto px-6 lg:px-12 flex justify-between items-center h-24">
-          <div className="flex-1">
-            <nav className="hidden md:flex space-x-12 text-sm tracking-widest">
-              <Link href="/store" className="hover:text-[#E5C1CD] transition-colors">NEW ARRIVALS</Link>
-              <Link href="/store?category=Blouses" className="hover:text-[#E5C1CD] transition-colors">BLOUSES</Link>
-              <Link href="/store?category=Suits" className="hover:text-[#E5C1CD] transition-colors">SUITS</Link>
-              <Link href="/store?category=Dresses" className="hover:text-[#E5C1CD] transition-colors">DRESSES</Link>
+      {/* Luxury Header */}
+      <header className="sticky top-0 z-50 glass border-b border-black/5">
+        <div className="max-w-[1400px] mx-auto px-6 lg:px-12 flex justify-between items-center h-20 md:h-28">
+          <div className="hidden lg:flex flex-1">
+            <nav className="flex space-x-10 text-[11px] tracking-[0.3em] font-medium uppercase">
+              <Link href="/store" className="hover:text-accent transition-colors duration-500">New Arrivals</Link>
+              <Link href="/store?category=Suits" className="hover:text-accent transition-colors duration-500">Suits</Link>
+              <Link href="/store?category=Dresses" className="hover:text-accent transition-colors duration-500">Dresses</Link>
             </nav>
           </div>
           
-          <div className="flex-1 text-center font-[family-name:var(--font-playfair)] px-2">
-            <Link href="/store" className="text-xl sm:text-2xl md:text-4xl tracking-widest text-[#333333] whitespace-nowrap">PRERNA SILKS</Link>
+          <div className="flex-1 text-center font-serif">
+            <Link href="/store" className="text-2xl md:text-4xl tracking-[0.2em] text-[#121212] font-semibold uppercase">
+              PRERNA <span className="font-light italic">Silks</span>
+            </Link>
           </div>
 
-          <div className="flex-1 flex justify-end space-x-3 md:space-x-6 text-[10px] md:text-sm tracking-widest font-bold">
-            <Link href="/store" className="hover:text-[#E5C1CD] transition-colors hidden xs:block">SEARCH</Link>
-            <Link href="/store" className="hover:text-[#E5C1CD] transition-colors">CART (0)</Link>
+          <div className="flex-1 flex justify-end items-center space-x-6 md:space-x-10 text-[11px] tracking-[0.3em] font-bold uppercase">
+             <button className="hover:text-accent transition-colors duration-500 hidden sm:block">Search</button>
+             <Link href="/store" className="hover:text-accent transition-colors duration-500">
+               Cart <span className="font-sans ml-1 opacity-60">(0)</span>
+             </Link>
           </div>
         </div>
       </header>
 
       {/* Store Content */}
-      <main>
+      <main className="relative">
         {children}
       </main>
 
-      {/* Footer */}
-      <footer className="bg-[#333333] text-[#FFFFF0] py-20 mt-24">
-        <div className="max-w-7xl mx-auto px-6 lg:px-12 grid grid-cols-1 md:grid-cols-3 gap-16 text-center md:text-left">
-          <div>
-            <h3 className="font-[family-name:var(--font-playfair)] text-2xl mb-6">Prerna Silks</h3>
-            <p className="text-sm font-light leading-relaxed text-gray-300">
-              Elegance tailored for the modern woman. Handcrafted designs powered by your Boutique SaaS Platform.
+      {/* Editorial Footer */}
+      <footer className="bg-[#121212] text-[#FDFDFA] pt-32 pb-20 mt-32">
+        <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-20 mb-24">
+            <div className="md:col-span-2">
+              <h3 className="font-serif text-3xl md:text-5xl mb-8 tracking-wide">Prerna Silks</h3>
+              <p className="text-sm md:text-lg font-light leading-relaxed text-[#FDFDFA]/60 max-w-md">
+                Dedicated to the preservation of heritage and the pursuit of modern elegance. Each piece is a story told in silk.
+              </p>
+            </div>
+            
+            <div>
+              <h4 className="tracking-[0.3em] text-[10px] font-bold mb-10 uppercase text-accent">Studio</h4>
+              <ul className="space-y-6 text-xs tracking-widest text-[#FDFDFA]/60">
+                <li><Link href="#" className="hover:text-white transition-colors duration-500">Our Story</Link></li>
+                <li><Link href="#" className="hover:text-white transition-colors duration-500">Artisanal Craft</Link></li>
+                <li><Link href="#" className="hover:text-white transition-colors duration-500">Sustainability</Link></li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="tracking-[0.3em] text-[10px] font-bold mb-10 uppercase text-accent">Concierge</h4>
+              <ul className="space-y-6 text-xs tracking-widest text-[#FDFDFA]/60">
+                <li><Link href="#" className="hover:text-white transition-colors duration-500">Contact Us</Link></li>
+                <li><Link href="#" className="hover:text-white transition-colors duration-500">Bespoke Fitting</Link></li>
+                <li><Link href="#" className="hover:text-white transition-colors duration-500">Care Guide</Link></li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="pt-10 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-6">
+            <p className="text-[10px] tracking-[0.2em] font-medium text-[#FDFDFA]/40 uppercase">
+              © 2026 PRERNA SILKS. All Rights Reserved.
             </p>
-          </div>
-          <div>
-            <h4 className="tracking-widest text-xs font-semibold mb-6 uppercase text-[#E5C1CD]">Client Support</h4>
-            <ul className="space-y-4 text-sm text-gray-300">
-              <li><Link href="#" className="hover:text-white transition-colors">Contact Us</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors">Shipping & Returns</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors">Size Guide</Link></li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="tracking-widest text-xs font-semibold mb-6 uppercase text-[#E5C1CD]">Newsletter</h4>
-            <p className="text-sm text-gray-300 mb-4">Join our list for early access to new collections.</p>
-            <div className="flex border-b border-gray-500 pb-2">
-              <input type="email" placeholder="Email Address" className="bg-transparent w-full focus:outline-none text-sm placeholder-gray-500" />
-              <button className="text-xs tracking-widest font-medium hover:text-[#E5C1CD] transition-colors">SUBSCRIBE</button>
+            <div className="flex space-x-8 text-[10px] tracking-[0.2em] font-medium text-[#FDFDFA]/40 uppercase">
+              <Link href="#" className="hover:text-white transition-colors">Instagram</Link>
+              <Link href="#" className="hover:text-white transition-colors">Pinterest</Link>
             </div>
           </div>
         </div>

@@ -1,23 +1,12 @@
 import type { Metadata } from "next";
-import { Playfair_Display, Montserrat } from "next/font/google";
 import "./globals.css";
-
-const playfair = Playfair_Display({ 
-  subsets: ["latin"],
-  variable: "--font-playfair",
-});
-
-const montserrat = Montserrat({ 
-  subsets: ["latin"],
-  variable: "--font-montserrat",
-});
+import CustomCursor from "./components/CustomCursor";
+import Script from 'next/script';
 
 export const metadata: Metadata = {
-  title: "SaaS Platform & Boutique Templates",
-  description: "Ultra-professional boutique management.",
+  title: "PRERNA SILKS | World Class Boutique",
+  description: "Exquisite handcrafted luxury wear.",
 };
-
-import Script from 'next/script';
 
 export default function RootLayout({
   children,
@@ -32,10 +21,12 @@ export default function RootLayout({
           strategy="afterInteractive" 
         />
       </head>
-      <body
-        className={`${playfair.variable} ${montserrat.variable} antialiased`}
-      >
-        {children}
+      <body className="antialiased selection:bg-[#C5A1AD] selection:text-white">
+        <CustomCursor />
+        <div className="noise-overlay" />
+        <div className="relative z-10">
+          {children}
+        </div>
       </body>
     </html>
   );
